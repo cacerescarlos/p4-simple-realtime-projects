@@ -1,0 +1,165 @@
+/* General */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100dvh; /* Usa 'dvh' para alturas dinámicas */
+    overflow: hidden; /* Evita scroll extra */
+}
+
+h1 {
+    color: #333;
+    margin: 10px 0;
+    text-align: center;
+}
+
+/* Contenedor principal del chat */
+#chat-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 420px; /* Máximo ancho en pantallas grandes */
+    height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom)); /* Ajuste para notch */
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* Área de mensajes */
+#messages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    background-color: #f4f4f4;
+    word-wrap: break-word;
+    box-sizing: border-box; /* Asegura que padding y borde se consideren en el tamaño */
+}
+
+.message {
+    padding: 8px 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    max-width: 75%;
+}
+
+.message.own {
+    background-color: #d1f7c4;
+    align-self: flex-end;
+    text-align: right;
+}
+
+.message.other {
+    background-color: #e4e9f2;
+    align-self: flex-start;
+}
+
+.message.system {
+    text-align: center;
+    font-style: italic;
+    color: #888;
+    background: transparent;
+}
+
+/* Formulario */
+#form {
+    display: flex;
+    padding: 10px;
+    background: #fff;
+    border-top: 1px solid #ddd;
+}
+
+/* Ajustar el input para prevenir zoom automático en iOS */
+#input {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 5px 0 0 5px;
+    font-size: 16px; /* Tamaño mínimo para evitar zoom automático */
+    outline: none;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#send {
+    padding: 10px 20px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    font-size: 16px; /* Coincide con el tamaño del input */
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+}
+
+/* Modal: Ajustar también los inputs del modal */
+#userModal input {
+    padding: 10px;
+    font-size: 16px; /* Tamaño mínimo para evitar zoom */
+    margin-right: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+#send:hover {
+    background-color: #45a049;
+}
+
+/* Modal */
+#userModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#userModal input {
+    padding: 10px;
+    font-size: 16px;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#userModal button {
+    padding: 10px;
+    background: #4caf50;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#userModal button:hover {
+    background: #45a049;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+    #chat-container {
+        width: 95%;
+        height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    }
+
+    #input {
+        font-size: 14px;
+    }
+
+    #send {
+        font-size: 14px;
+        padding: 8px 15px;
+    }
+}

@@ -2,47 +2,76 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Simple</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        #messages { border: 1px solid #ccc; height: 300px; overflow-y: auto; padding: 10px; margin-bottom: 10px; }
-        #form { display: flex; }
-        #input { flex: 1; padding: 10px; }
-        #send { padding: 10px 20px; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <title>Chat Responsivo</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Chat Simple</h1>
-    <div id="messages"></div>
-    <form id="form" action="">
-        <input id="input" autocomplete="off" placeholder="Escribe un mensaje..." />
-        <button id="send">Enviar</button>
-    </form>
+    <!-- Modal para ingresar nombre -->
+    <div id="userModal">
+        <input id="usernameInput" type="text" placeholder="Ingresa tu nombre">
+        <button id="usernameSubmit">Entrar</button>
+    </div>
 
+    <!-- Contenedor del chat -->
+    <div id="chat-container">
+        <h1>Chat</h1>
+        <div id="messages"></div>
+        <form id="form" action="">
+            <input id="input" type="text" autocomplete="off" placeholder="Escribe un mensaje...">
+            <button id="send" type="submit">Enviar</button>
+        </form>
+    </div>
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
-
         const messages = document.getElementById('messages');
         const form = document.getElementById('form');
         const input = document.getElementById('input');
+        const userModal = document.getElementById('userModal');
+        const usernameInput = document.getElementById('usernameInput');
+        const usernameSubmit = document.getElementById('usernameSubmit');
 
+        let username = '';
+
+        // Ingresar nombre
+        usernameSubmit.addEventListener('click', () => {
+            username = usernameInput.value.trim();
+            if (username) {
+                userModal.style.display = 'none';
+                socket.emit('user connected', username);
+            }
+        });
+
+        // Enviar mensaje
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-            const msg = input.value;
-            if (msg) {
-                socket.emit('chat message', msg);
+            const message = input.value.trim();
+            if (message) {
+                socket.emit('chat message', { user: username, message });
+                addMessage(`[${username}]: ${message}`, 'own');
                 input.value = '';
             }
         });
 
-        socket.on('chat message', (msg) => {
-            const item = document.createElement('div');
-            item.textContent = msg;
-            messages.appendChild(item);
-            messages.scrollTop = messages.scrollHeight;
+        // Mostrar mensaje recibido
+        socket.on('chat message', (data) => {
+            addMessage(`[${data.user}]: ${data.message}`, 'other');
         });
+
+        // Mostrar mensaje del sistema
+        socket.on('system message', (message) => {
+            addMessage(message, 'system');
+        });
+
+        // Agregar mensaje al chat
+        function addMessage(text, type) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            div.className = `message ${type}`;
+            messages.appendChild(div);
+            messages.scrollTop = messages.scrollHeight;
+        }
     </script>
 </body>
 </html>
